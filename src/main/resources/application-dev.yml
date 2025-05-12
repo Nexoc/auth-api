@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    # PostgreSQL database connection settings
+    # url: jdbc:postgresql://172.18.0.2:5432/db_auth  # Example Docker network IP
+    url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
+    # url: jdbc:postgresql://db_auth:5432/db_auth    # Docker Compose service name
+    username: nexoc                                  # DB username
+    password: 0880                                   # DB password
+    driver-class-name: org.postgresql.Driver         # JDBC driver for PostgreSQL
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop     # Automatically drops and recreates schema on startup (NOT for production)
+
+    show-sql: true              # Show SQL queries in the console (useful for debugging)
+    properties:
+      hibernate:
+        format_sql: true        # Format SQL queries in logs for better readability
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
+
+server:
+  port: 8001  # Application will run on localhost:8001
+
+base:
+  url: "http://localhost:8001"  # Base URL used in your application (can be used in custom properties)
+
+jwt:
+  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp  # Secret key for signing JWTs
+  expiration: 900000  # JWT expiration time in milliseconds (900000 ms = 15 minutes)
+
+# Swagger/OpenAPI config
+# http://localhost:8001/swagger-ui/index.html
+# You can access API docs at http://localhost:8001/v3/api-docs
+# Copy the JSON output and paste it at https://editor.swagger.io/
+springdoc:
+  springdoc:
+    swagger-ui:
+      enabled: true  # Enable Swagger UI
+    api-docs:
+      enabled: true  # Enable OpenAPI JSON generation
+
+logging:
+  level:
+    org.springframework.web: DEBUG     # Show detailed web logs (e.g. requests, controller mapping)
+    org.springdoc: DEBUG               # Show Swagger/OpenAPI-related debug logs
+
+# CORS config (documented - needs CorsConfig.java to apply)
+cors:
+  allowed-origins:
+    - "http://localhost:8080"
+    - "https://frontend2.com"
+    - "http://backend.com"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  allow-credentials: true

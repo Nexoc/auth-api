@@ -1,0 +1,40 @@
+#version: "3.8"
+
+#services:
+  #db_auth:
+    #image: postgres:latest
+    #container_name: db_auth
+    #ports:
+      #- 5432:5432 # maps container port 5432 to host port 5433 (outside 5433)
+    #volumes:
+     # - ~/apps/postgres:/var/lib/postgresql/data-content
+    #environment:
+     # - POSTGRES_PASSWORD=0880
+     #- POSTGRES_USER=nexoc
+     # - POSTGRES_DB=db_auth
+
+#volumes:
+ # db_data_1:
+
+
+version: '3.8'
+services:
+  db_auth:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - auth_network
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust # Временно для простоты, потом лучше убрать или настроить
+networks:
+  auth_network:
+    driver: bridge
+volumes:
+  db_data:
+
+
+

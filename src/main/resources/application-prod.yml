@@ -1,0 +1,46 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_auth  # PostgreSQL connection URL (adjust for prod DB host)
+    username: nexoc                                # Database username
+    password: 0880                                  # Database password (use environment variables in real prod!)
+    driver-class-name: org.postgresql.Driver        # JDBC driver class
+
+  jpa:
+    hibernate:
+      ddl-auto: none     # No automatic schema creation/modification — suitable for production
+    show-sql: false      # Disable SQL query logging for performance and security
+    properties:
+      hibernate:
+        format_sql: false  # Disable SQL formatting in logs
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect  # PostgreSQL-specific Hibernate dialect
+
+server:
+  port: 8001  # Application will run on port 8001
+
+base:
+  url: "http://localhost:8001"  # Base URL of the application (adjust if behind a proxy or load balancer)
+
+jwt:
+  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp  # JWT secret key (should be stored securely)
+  expiration: 900000  # JWT token expiration in milliseconds (15 minutes)
+
+springdoc:
+  swagger-ui:
+    enabled: false  # Disable Swagger UI in production
+  api-docs:
+    enabled: false  # Disable OpenAPI JSON generation in production
+
+logging:
+  level:
+    root: INFO                      # General log level
+    org.springframework.web: WARN  # Reduce Spring Web logging to warnings only
+    org.springdoc: WARN            # Reduce Swagger-related logging
+
+# CORS config (documented - needs CorsConfig.java to apply)
+cors:
+  allowed-origins: "http://localhost:8080"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  allow-credentials: true
