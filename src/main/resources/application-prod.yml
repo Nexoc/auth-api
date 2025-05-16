@@ -23,7 +23,7 @@ base:
   url: "http://localhost:8001"  # Base URL of the application (adjust if behind a proxy or load balancer)
 
 jwt:
-  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp  # JWT secret key (should be stored securely)
+  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp  # JWT secret key (should be changed!!!)
   expiration: 900000  # JWT token expiration in milliseconds (15 minutes)
 
 springdoc:

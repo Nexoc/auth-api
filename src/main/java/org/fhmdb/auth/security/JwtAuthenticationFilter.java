@@ -46,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
         logger.info("JWT token found, extracting email...");
 
         final String jwt = authHeader.substring(7);
@@ -80,5 +81,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 }

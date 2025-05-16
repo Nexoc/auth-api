@@ -2,4 +2,4 @@ spring:
   application:
     name: AuthAPI
   profiles:
-    active: dev  # по умолчанию включается dev-профиль
+    active: dev-docker  # по умолчанию включается dev-профиль

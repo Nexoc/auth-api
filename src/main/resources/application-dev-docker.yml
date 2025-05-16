@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/db_auth   # Connect to the PostgreSQL container using service name
+    username: nexoc                                 # Database username (same as in Docker)
+    password: ´0880´                                # Database password (same as in Docker)
+    driver-class-name: org.postgresql.Driver        # PostgreSQL JDBC driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop                         # Recreate database schema on every app start (for dev only)
+    show-sql: true                                  # Print SQL queries in console
+    properties:
+      hibernate:
+        format_sql: true                            # Format SQL for better readability in logs
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Use PostgreSQL-specific dialect
+
+server:
+  port: 8001                                         # Spring Boot app will run on http://localhost:8001
+
+base:
+  url: "http://localhost:8001"                       # Custom base URL (can be used in your app logic)
+
+jwt:
+  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp   # Secret key for signing JWT tokens
+  expiration: 900000                                  # JWT token expiration in milliseconds (15 minutes)
+
+springdoc:
+  springdoc:
+    swagger-ui:
+      enabled: true                                  # Enable Swagger UI for API documentation
+    api-docs:
+      enabled: true                                  # Enable OpenAPI JSON generation
+
+logging:
+  level:
+    org.springframework.web: DEBUG                   # Debug logs for Spring MVC
+    org.springdoc: DEBUG                             # Debug logs for Swagger/OpenAPI
+
+cors:
+  allowed-origins:                                   # Allowed domains for CORS requests
+    - "http://localhost:8080"
+    - "https://frontend2.com"
+    - "http://backend.com"
+  allowed-methods: "*"                               # Allow all HTTP methods
+  allowed-headers: "*"                               # Allow all headers
+  allow-credentials: true                            # Allow sending credentials (cookies, etc.)

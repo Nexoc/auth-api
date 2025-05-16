@@ -23,16 +23,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("SecurityConfig: filter chain built");
+        // System.out.println("SecurityConfig: filter chain built");
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(
-                                "/auth/login", "/auth/register"
+                                "/auth/login",
+                                        "/auth/register",
+
+                                     // Swagger UI access (всё это обязательно!)
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().permitAll() //.authenticated()
+                        .anyRequest().authenticated() //permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults());

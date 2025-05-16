@@ -1,40 +1,22 @@
-#version: "3.8"
+version: "3.8"
 
-#services:
-  #db_auth:
-    #image: postgres:latest
-    #container_name: db_auth
-    #ports:
-      #- 5432:5432 # maps container port 5432 to host port 5433 (outside 5433)
-    #volumes:
-     # - ~/apps/postgres:/var/lib/postgresql/data-content
-    #environment:
-     # - POSTGRES_PASSWORD=0880
-     #- POSTGRES_USER=nexoc
-     # - POSTGRES_DB=db_auth
-
-#volumes:
- # db_data_1:
-
-
-version: '3.8'
 services:
   db_auth:
-    image: postgres:latest
+    image: postgres:latest                     # Use the latest official PostgreSQL image
+    container_name: db_auth                   # Set a custom name for the container
     ports:
-      - "5432:5432"
+      - "5433:5432"                            # Map container port 5433 to host port 5432
+      # If port 5432 is busy, change to "5433:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - auth_network
+      - db_data_1:/var/lib/postgresql/data     # Persist database data between container restarts
     environment:
-      POSTGRES_HOST_AUTH_METHOD: trust # Временно для простоты, потом лучше убрать или настроить
-networks:
-  auth_network:
-    driver: bridge
+      POSTGRES_USER: nexoc                     # Username for the PostgreSQL database
+      POSTGRES_PASSWORD: ´0880´                  # Password for the database user
+      POSTGRES_DB: db_auth                     # Name of the database to create on container startup
+
 volumes:
-  db_data:
+  db_data_1:                                    # Define a named volume to store PostgreSQL data
+
 
 
 
