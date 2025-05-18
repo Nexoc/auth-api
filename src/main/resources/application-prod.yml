@@ -3,8 +3,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/db_auth  # PostgreSQL connection URL (adjust for prod DB host)
     username: nexoc                                # Database username
-    password: 0880                                  # Database password (use environment variables in real prod!)
-    driver-class-name: org.postgresql.Driver        # JDBC driver class
+    password: ´0880´                               # Database password (use environment variables in real prod!)
+    driver-class-name: org.postgresql.Driver       # JDBC driver class
 
   jpa:
     hibernate:

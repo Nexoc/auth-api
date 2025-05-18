@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/db_auth   # Connect to the PostgreSQL container using service name
+    url: jdbc:postgresql://db_auth:5432/db_auth       # if App also in docker
+    # url: jdbc:postgresql://localhost:5433/db_auth   # Connect to the PostgreSQL container using service name
     username: nexoc                                 # Database username (same as in Docker)
     password: ´0880´                                # Database password (same as in Docker)
     driver-class-name: org.postgresql.Driver        # PostgreSQL JDBC driver
@@ -23,6 +24,8 @@ base:
 
 jwt:
   secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp   # Secret key for signing JWT tokens
+                                                             # -> generated openssl rand -base64 32
+
   expiration: 900000                                  # JWT token expiration in milliseconds (15 minutes)
 
 springdoc:
