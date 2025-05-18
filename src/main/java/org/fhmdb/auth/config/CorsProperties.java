@@ -13,7 +13,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "cors")
 public class CorsProperties {
     private List<String> allowedOrigins;
-    private String allowedMethods;
-    private String allowedHeaders;
+    private List<String> allowedMethods;
+    private List<String> allowedHeaders;
     private boolean allowCredentials;
 }
+

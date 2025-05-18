@@ -21,8 +21,8 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
-                        .allowedMethods(corsProperties.getAllowedMethods())
-                        .allowedHeaders(corsProperties.getAllowedHeaders())
+                        .allowedMethods(corsProperties.getAllowedMethods().toArray(new String[0]))
+                        .allowedHeaders(corsProperties.getAllowedHeaders().toArray(new String[0]))
                         .allowCredentials(corsProperties.isAllowCredentials());
             }
         };

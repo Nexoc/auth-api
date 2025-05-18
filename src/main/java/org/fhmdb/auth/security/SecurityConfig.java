@@ -1,5 +1,6 @@
 package org.fhmdb.auth.security;
 
+import org.fhmdb.auth.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,11 +18,13 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler, CustomOAuth2UserService customOAuth2UserService) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.oAuth2LoginSuccessHandler = oAuth2LoginSuccessHandler;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
@@ -29,6 +32,7 @@ public class SecurityConfig {
         // System.out.println("SecurityConfig: filter chain built");
 
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -46,8 +50,15 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated() //permitAll()
                 )
+
                 .oauth2Login(oauth -> oauth
-                        .successHandler(oAuth2LoginSuccessHandler)  // Внедрить через конструктор
+                        // Configure the service that will fetch user info from the OAuth2 provider (e.g. GitHub)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) // Use custom service to manually fetch email if it's missing
+                        )
+
+                        // Handler to run on successful OAuth2 login
+                        .successHandler(oAuth2LoginSuccessHandler) // This handler creates a JWT and redirects to the frontend with it
                 )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -56,8 +67,4 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

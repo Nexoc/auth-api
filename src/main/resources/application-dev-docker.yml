@@ -1,7 +1,8 @@
 spring:
   datasource:
     # url: jdbc:postgresql://db_auth:5432/db_auth  # Database URL (when running inside Docker)
-    url: jdbc:postgresql://localhost:5433/db_auth  # Alternative URL for local testing
+    # url: jdbc:postgresql://localhost:5433/db_auth  # Alternative URL for local testing
+    url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
     username: nexoc                                # Database username
     password: '0880'                               # Database password (quoted in case of special characters)
     driver-class-name: org.postgresql.Driver       # PostgreSQL JDBC driver
@@ -21,10 +22,9 @@ spring:
       client:
         registration:
           github:
-            client-id: your-client-id              # GitHub OAuth client ID (set in GitHub developer settings)
-            client-secret: your-client-secret      # GitHub OAuth client secret
-            scope:
-              - user:email                         # Request access to user's email
+            client-id: Ov23liHv6TNkl75EZlnD        # GitHub OAuth client ID (set in GitHub developer settings)
+            client-secret: e6955285d5dfcd195f80c70df7c89d71ab6e5b3f      # GitHub OAuth client secret
+            scope: read:user, user:email                    # Request access to user's email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"  # Where GitHub will redirect after login
             client-name: GitHub                    # Display name of the provider
         provider:
@@ -56,13 +56,21 @@ logging:
 
 
 cors:
-  allowed-origins:                                 # Frontend origins allowed to call the backend (CORS policy)
-    - "http://localhost:8080"                      # Local frontend
-    - "https://frontend2.com"                      # Example production frontend
-    - "http://backend.com"                         # Another allowed origin
-  allowed-methods: "*"                             # Allow all HTTP methods (GET, POST, PUT, etc.)
-  allowed-headers: "*"                             # Allow all headers
-  allow-credentials: true                          # Allow cookies/credentials in cross-origin requests
+  allowed-origins:
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+    - "https://frontend2.com"
+    - "http://backend.com"
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - OPTIONS
+  allowed-headers:
+    - "*"
+  allow-credentials: true
+
 
 frontend:
-  url: "http://localhost:8080/oauth-success"       # Redirect URL after successful GitHub login (frontend route)
+  url: "http://localhost:3000/oauth-success"       # Redirect URL after successful GitHub login (frontend route)

@@ -1,6 +1,7 @@
 package org.fhmdb.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.fhmdb.auth.dto.RegisterRequest;
 import org.fhmdb.auth.model.User;
@@ -14,7 +15,7 @@ import org.fhmdb.auth.dto.LoginRequest;
 import java.util.List;
 import java.util.Optional;
 
-
+@Tag(name = "auth-controller")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,6 +25,7 @@ public class AuthController {
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
+
 
     @Operation(summary = "registration")
     @PostMapping("/register")
@@ -38,6 +40,7 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
+
     @Operation(summary = "User login")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
@@ -45,16 +48,6 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
-    @Operation(summary = "Delete user by ID")
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
-        boolean deleted = authService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok("User deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @Operation(summary = "Update user by ID")
     @PutMapping("/users/{id}")
@@ -69,6 +62,18 @@ public class AuthController {
         boolean updated = authService.updateUser(updatedUser);
         if (updated) {
             return ResponseEntity.ok("User updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @Operation(summary = "Delete user by ID")
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        boolean deleted = authService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("User deleted successfully");
         } else {
             return ResponseEntity.notFound().build();
         }
