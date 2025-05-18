@@ -1,50 +1,68 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db_auth:5432/db_auth       # if App also in docker
-    # url: jdbc:postgresql://localhost:5433/db_auth   # Connect to the PostgreSQL container using service name
-    username: nexoc                                 # Database username (same as in Docker)
-    password: ´0880´                                # Database password (same as in Docker)
-    driver-class-name: org.postgresql.Driver        # PostgreSQL JDBC driver
+    # url: jdbc:postgresql://db_auth:5432/db_auth  # Database URL (when running inside Docker)
+    url: jdbc:postgresql://localhost:5433/db_auth  # Alternative URL for local testing
+    username: nexoc                                # Database username
+    password: '0880'                               # Database password (quoted in case of special characters)
+    driver-class-name: org.postgresql.Driver       # PostgreSQL JDBC driver
 
   jpa:
     hibernate:
-      ddl-auto: create-drop                         # Recreate database schema on every app start (for dev only)
-    show-sql: true                                  # Print SQL queries in console
+      ddl-auto: create-drop                        # Drop and recreate DB schema on every app start (DEV ONLY)
+    show-sql: true                                 # Print SQL queries to console
     properties:
       hibernate:
-        format_sql: true                            # Format SQL for better readability in logs
-      database: postgresql
-      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Use PostgreSQL-specific dialect
+        format_sql: true                           # Make SQL logs more readable
+      database: postgresql                         # Database type
+      database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: your-client-id              # GitHub OAuth client ID (set in GitHub developer settings)
+            client-secret: your-client-secret      # GitHub OAuth client secret
+            scope:
+              - user:email                         # Request access to user's email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"  # Where GitHub will redirect after login
+            client-name: GitHub                    # Display name of the provider
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize  # GitHub auth page
+            token-uri: https://github.com/login/oauth/access_token       # GitHub token endpoint
+            user-info-uri: https://api.github.com/user                   # GitHub API to get user info
 
 server:
-  port: 8001                                         # Spring Boot app will run on http://localhost:8001
+  port: 8001                                       # Backend runs on http://localhost:8001
 
 base:
-  url: "http://localhost:8001"                       # Custom base URL (can be used in your app logic)
+  url: "http://localhost:8001"                     # Used in redirect-uri for OAuth (matches server port)
 
 jwt:
-  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp   # Secret key for signing JWT tokens
-                                                             # -> generated openssl rand -base64 32
-
-  expiration: 900000                                  # JWT token expiration in milliseconds (15 minutes)
+  secret: bXlTdXBlclVsdHJhU2VjcmV0S2V5Rm9ySldUXzIwMjUhQCMp  # Secret for signing JWT tokens (base64 string)
+  expiration: 900000                                # JWT expiration in milliseconds (15 minutes)
 
 springdoc:
-  springdoc:
-    swagger-ui:
-      enabled: true                                  # Enable Swagger UI for API documentation
-    api-docs:
-      enabled: true                                  # Enable OpenAPI JSON generation
+  swagger-ui:
+    enabled: true                                  # Enable Swagger UI (for interactive API docs)
+  api-docs:
+    enabled: true                                  # Enable OpenAPI docs generation
 
 logging:
   level:
-    org.springframework.web: DEBUG                   # Debug logs for Spring MVC
-    org.springdoc: DEBUG                             # Debug logs for Swagger/OpenAPI
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+
 
 cors:
-  allowed-origins:                                   # Allowed domains for CORS requests
-    - "http://localhost:8080"
-    - "https://frontend2.com"
-    - "http://backend.com"
-  allowed-methods: "*"                               # Allow all HTTP methods
-  allowed-headers: "*"                               # Allow all headers
-  allow-credentials: true                            # Allow sending credentials (cookies, etc.)
+  allowed-origins:                                 # Frontend origins allowed to call the backend (CORS policy)
+    - "http://localhost:8080"                      # Local frontend
+    - "https://frontend2.com"                      # Example production frontend
+    - "http://backend.com"                         # Another allowed origin
+  allowed-methods: "*"                             # Allow all HTTP methods (GET, POST, PUT, etc.)
+  allowed-headers: "*"                             # Allow all headers
+  allow-credentials: true                          # Allow cookies/credentials in cross-origin requests
+
+frontend:
+  url: "http://localhost:8080/oauth-success"       # Redirect URL after successful GitHub login (frontend route)

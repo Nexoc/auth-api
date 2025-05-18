@@ -16,7 +16,7 @@ This is a standalone authentication backend responsible for user management and 
 
 ### 📣 API Endpoints (documented with Swagger)
 
-Visit Swagger UI: `http://localhost:8001/swagger-ui.html`
+Visit Swagger UI: `http://localhost:8001/swagger-ui/index.html#/`
 
 ---
 

@@ -6,6 +6,8 @@ import org.fhmdb.auth.dto.RegisterRequest;
 import org.fhmdb.auth.model.User;
 import org.fhmdb.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.fhmdb.auth.dto.LoginRequest;
 
@@ -36,19 +38,22 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-
-    @Operation(summary = "Get all users")
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(authService.getAllUsers());
+    @Operation(summary = "User login")
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
+        String token = authService.login(request.email(), request.password());
+        return ResponseEntity.ok(token);
     }
 
-    @Operation(summary = "Get user by ID")
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        Optional<User> user = authService.getUserById(id);
-        return user.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @Operation(summary = "Delete user by ID")
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        boolean deleted = authService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Update user by ID")
@@ -69,24 +74,19 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "Delete user by ID")
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
-        boolean deleted = authService.deleteUser(id);
-        if (deleted) {
-            return ResponseEntity.ok("User deleted successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+    @Operation(summary = "Get all users")
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(authService.getAllUsers());
     }
 
-
-    @Operation(summary = "User login")
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
-        String token = authService.login(request.email(), request.password());
-        return ResponseEntity.ok(token);
+    @Operation(summary = "Get user by ID")
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        Optional<User> user = authService.getUserById(id);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,7 @@ import java.util.List;
 @Setter
 @Builder
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
@@ -26,16 +28,26 @@ public class User implements UserDetails {
     @NotBlank(message = "The name field can't be blank")
     private String name;
 
-
-    @NotBlank(message = "The  email field can't be blank")
-    @Column(unique = true)
+    @NotBlank(message = "The email field can't be blank")
     @Email(message = "Please enter email in proper format")
+    @Column(unique = true)
     private String email;
 
     @NotBlank(message = "The password field can't be blank")
     @Size(min = 5, message = "The password must be at least 5 characters")
     private String password;
 
+    @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(nullable = true)
+    private String provider; // e.g. "github", "google", "local"
+
+    @Column(nullable = true)
+    private Boolean oauthUser; // nullable Boolean for builder compatibility
+
+    // Spring Security methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -48,26 +60,36 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // used by Spring Security to identify the user during authentication
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
+
+    public boolean isOauthUser() {
+        return Boolean.TRUE.equals(oauthUser);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+    }
+
 }
