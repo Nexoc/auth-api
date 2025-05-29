@@ -3,7 +3,7 @@ spring:
     # ---->>>>>>>>> USE docker-compose2.yml <<<<<<<<<<<<-----------
     #
     # url: jdbc:postgresql://db_auth:5432/db_auth       # if App also in docker
-    url: jdbc:postgresql://localhost:5433/db_auth   # Connect to the PostgreSQL container using service name
+    url: jdbc:postgresql://localhost:5434/db_auth   # Connect to the PostgreSQL container using service name
     username: nexoc                                 # Database username (same as in Docker)
     password: ´0880´                                # Database password (same as in Docker)
     driver-class-name: org.postgresql.Driver        # PostgreSQL JDBC driver

@@ -4,7 +4,7 @@ spring:
     #
     # PostgreSQL database connection settings
     # url: jdbc:postgresql://172.18.0.2:5432/db_auth  # Example Docker network IP
-    url: jdbc:postgresql://localhost:5433/db_auth    # Localhost for local development
+    url: jdbc:postgresql://localhost:5434/db_auth    # Localhost for local development
     # url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
     # url: jdbc:postgresql://db_auth:5432/db_auth    # Docker Compose service name
     username: nexoc                                  # DB username
