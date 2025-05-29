@@ -4,7 +4,7 @@ spring:
     # url: jdbc:postgresql://db_auth:5432/db_auth  # Database URL (when running inside Docker)
     # url: jdbc:postgresql://localhost:5433/db_auth  # Alternative URL for local testing
     # url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
-    url: jdbc:postgresql://localhost:5433/db_auth    # Localhost for local development
+    url: jdbc:postgresql://localhost:5434/db_auth    # Localhost for local development
     username: nexoc                                # Database username
     password: ´0880´                               # Database password (quoted in case of special characters)
     driver-class-name: org.postgresql.Driver       # PostgreSQL JDBC driver
