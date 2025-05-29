@@ -5,7 +5,7 @@ services:
     container_name: db_auth                   # Set a custom name for the container
     ports:
       - "5434:5432"                            # Map container port 5433 to host port 5432
-      # If port 5432 is busy, change to "5433:5432"
+
     volumes:
       - db_data_1:/var/lib/postgresql/data     # Persist database data between container restarts
     environment:
@@ -14,21 +14,13 @@ services:
       POSTGRES_DB: db_auth                     # Name of the database to create on container startup
 
   auth_app:
-    image: openjdk:21-jdk-slim
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: auth_app
     ports:
       - "8001:8001"
-    volumes:
-      - ./auth-0.0.1-SNAPSHOT.jar:/app/app.jar
-      - ./application-dev-docker.yml:/app/application-dev-docker.yml
-    working_dir: /app
-    command: [
-      "java", "-jar", "app.jar",
-      "--spring.profiles.active=dev-docker",
-      "--spring.config.location=file:/app/application-dev-docker.yml"
-    ]
     depends_on:
       - db_auth
-
 volumes:
   db_data_1:

@@ -71,3 +71,7 @@ cors:
   allowed-methods: "*"
   allowed-headers: "*"
   allow-credentials: true
+
+# please change right PORT if necessary
+frontend:
+  url: "http://localhost:8080/oauth-success"       # Redirect URL after successful GitHub login (frontend route)

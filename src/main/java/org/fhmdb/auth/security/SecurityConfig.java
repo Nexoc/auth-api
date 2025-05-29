@@ -44,7 +44,10 @@ public class SecurityConfig {
                                     "/swagger-ui.html",
 
                                     // OAuth
-                                    "/oauth2/**"
+                                    "/oauth2/**",
+                                    // OAuth2 endpoints
+                                    "/oauth2/**",
+                                    "/login/oauth2/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
