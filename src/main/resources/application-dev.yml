@@ -1,11 +1,11 @@
 spring:
   datasource:
+    # -------> USE docker-compose <------------
     # PostgreSQL database connection settings
     # url: jdbc:postgresql://172.18.0.2:5432/db_auth  # Example Docker network IP
-    url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
-    # url: jdbc:postgresql://db_auth:5432/db_auth    # Docker Compose service name
+    url: jdbc:postgresql://localhost:5433/db_auth    # Localhost for local development
     username: nexoc                                  # DB username
-    password: 0880                                   # DB password
+    password:  ´0880´                                # DB password
     driver-class-name: org.postgresql.Driver         # JDBC driver for PostgreSQL
 
   jpa:
@@ -18,6 +18,22 @@ spring:
         format_sql: true        # Format SQL queries in logs for better readability
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23liHv6TNkl75EZlnD        # GitHub OAuth client ID (set in GitHub developer settings)
+            client-secret: e6955285d5dfcd195f80c70df7c89d71ab6e5b3f      # GitHub OAuth client secret
+            scope: read:user, user:email                    # Request access to user's email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"  # Where GitHub will redirect after login
+            client-name: GitHub                    # Display name of the provider
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize  # GitHub auth page
+            token-uri: https://github.com/login/oauth/access_token       # GitHub token endpoint
+            user-info-uri: https://api.github.com/user                   # GitHub API to get user info
 
 server:
   port: 8001  # Application will run on localhost:8001
@@ -49,6 +65,7 @@ logging:
 cors:
   allowed-origins:
     - "http://localhost:8080"
+    - "http://localhost:3000"
     - "https://frontend2.com"
     - "http://backend.com"
   allowed-methods: "*"
