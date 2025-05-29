@@ -61,7 +61,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // Use URI from application.yml
         String redirectUrl = String.format(
                 "%s?token=%s&id=%d&username=%s",
-                frontendProperties.getUrl(),  // или getUrl() — в зависимости от выбранного варианта
+                frontendProperties.getUrl(),
                 token,
                 user.getUserId(),
                 URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8)

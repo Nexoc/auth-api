@@ -54,6 +54,8 @@ logging:
     org.springframework.web: DEBUG
     org.springdoc: DEBUG
 
+debug:
+  enabled: true  #
 
 cors:
   allowed-origins:

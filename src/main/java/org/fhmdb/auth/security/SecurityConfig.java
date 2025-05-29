@@ -29,8 +29,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // System.out.println("SecurityConfig: filter chain built");
-
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -48,7 +46,7 @@ public class SecurityConfig {
                                     // OAuth
                                     "/oauth2/**"
                         ).permitAll()
-                        .anyRequest().authenticated() //permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 .oauth2Login(oauth -> oauth
