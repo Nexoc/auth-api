@@ -1,11 +1,14 @@
 spring:
   datasource:
+    # ---->>>>>>>>> USE docker-compose <<<<<<<<<<<<-----------
+    #
     # PostgreSQL database connection settings
     # url: jdbc:postgresql://172.18.0.2:5432/db_auth  # Example Docker network IP
-    url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
+    url: jdbc:postgresql://localhost:5433/db_auth    # Localhost for local development
+    # url: jdbc:postgresql://localhost:5432/db_auth    # Localhost for local development
     # url: jdbc:postgresql://db_auth:5432/db_auth    # Docker Compose service name
     username: nexoc                                  # DB username
-    password: 0880                                   # DB password
+    password: ´0880´                                 # DB password
     driver-class-name: org.postgresql.Driver         # JDBC driver for PostgreSQL
 
   jpa:
@@ -49,6 +52,7 @@ logging:
 cors:
   allowed-origins:
     - "http://localhost:8080"
+    - "http://localhost:3000"
     - "https://frontend2.com"
     - "http://backend.com"
   allowed-methods: "*"
