@@ -34,22 +34,23 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                            "/auth/login",
+                                    "/auth/login",
                                     "/auth/register",
-                                    "/auth/**",
+                                    "/auth/register-or-login/face",
 
-                                 // Swagger UI access (всё это обязательно!)
+                                    // Swagger UI access (всё это обязательно!)
                                     "/v3/api-docs/**",
                                     "/swagger-ui/**",
                                     "/swagger-ui.html",
 
                                     // OAuth
                                     "/oauth2/**",
+
                                     // OAuth2 endpoints
                                     "/oauth2/**",
                                     "/login/oauth2/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() // "/auth/profile" -> update authenticated
                 )
 
                 .oauth2Login(oauth -> oauth
@@ -67,5 +68,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }

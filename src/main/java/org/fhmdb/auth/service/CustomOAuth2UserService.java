@@ -1,5 +1,8 @@
 package org.fhmdb.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -17,17 +20,23 @@ import java.util.Map;
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
+
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @Value("${github.user-emails-url}")
+    private String githubUserEmailsUrl;
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User user = super.loadUser(userRequest);
 
-        // GitHub may not provide the email in the initial user object
         String email = (String) user.getAttributes().get("email");
 
         if (email == null) {
-            // Fetch email from GitHub's separate /user/emails endpoint
+            logger.warn("GitHub email not provided in main user object, fetching manually...");
+
             String token = userRequest.getAccessToken().getTokenValue();
 
             HttpHeaders headers = new HttpHeaders();
@@ -35,13 +44,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             HttpEntity<Void> entity = new HttpEntity<>(headers);
 
             ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
-                    "https://api.github.com/user/emails",
+                    githubUserEmailsUrl,
                     HttpMethod.GET,
                     entity,
                     new ParameterizedTypeReference<>() {}
             );
 
             for (Map<String, Object> mailEntry : response.getBody()) {
+                logger.debug("Found email: {}", mailEntry);
                 if ((Boolean) mailEntry.get("primary") && (Boolean) mailEntry.get("verified")) {
                     email = (String) mailEntry.get("email");
                     break;
@@ -49,15 +59,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
 
             if (email == null) {
+                logger.error("No verified primary email found from GitHub /user/emails");
                 throw new OAuth2AuthenticationException("Email not available from GitHub.");
             }
 
-            // Manually add the email to user attributes
+            logger.info("Successfully retrieved email from GitHub: {}", email);
+
             Map<String, Object> attributes = new HashMap<>(user.getAttributes());
             attributes.put("email", email);
 
             return new DefaultOAuth2User(user.getAuthorities(), attributes, "login");
         }
+
+        logger.info("GitHub OAuth login with email: {}", email);
 
         return user;
     }

@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @Column(nullable = true)
     private Boolean oauthUser; // nullable Boolean for builder compatibility
 
+    @Column(unique = true, nullable = true)
+    private Long faceId;
+
     // Spring Security methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

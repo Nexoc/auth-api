@@ -35,6 +35,9 @@ spring:
             token-uri: https://github.com/login/oauth/access_token       # GitHub token endpoint
             user-info-uri: https://api.github.com/user                   # GitHub API to get user info
 
+github:
+  user-emails-url: "https://api.github.com/user/emails"
+
 server:
   port: 8001  # Application will run on localhost:8001
 
@@ -75,3 +78,6 @@ cors:
 # please change right PORT if necessary
 frontend:
   url: "http://localhost:8080/oauth-success"       # Redirect URL after successful GitHub login (frontend route)
+
+faceapi:
+  recognize-url: "http://localhost:8000/recognize"

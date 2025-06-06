@@ -4,15 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.fhmdb.auth.dto.RegisterRequest;
+import org.fhmdb.auth.dto.UpdateProfileRequest;
 import org.fhmdb.auth.model.User;
 import org.fhmdb.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.fhmdb.auth.dto.LoginRequest;
 
-import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "auth-controller")
@@ -21,9 +21,11 @@ import java.util.Optional;
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, PasswordEncoder passwordEncoder) {
         this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -49,25 +51,28 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Update user by ID")
-    @PutMapping("/users/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Integer id, @RequestBody @Valid RegisterRequest request) {
-        User updatedUser = User.builder()
-                .userId(id)
-                .name(request.name())
-                .email(request.email())
-                .password(request.password())
-                .build();
-
-        boolean updated = authService.updateUser(updatedUser);
-        if (updated) {
-            return ResponseEntity.ok("User updated successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/profile")
+    @Operation(summary = "Update your own profile")
+    public ResponseEntity<String> updateOwnProfile(
+            @AuthenticationPrincipal User currentUser,
+            @RequestBody UpdateProfileRequest request
+    ) {
+        authService.updateProfile(currentUser, request);
+        return ResponseEntity.ok("Profile updated successfully");
     }
 
 
+
+    @Operation(summary = "Get user by ID")
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
+        Optional<User> user = authService.getUserById(id);
+        return user.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+/*
     @Operation(summary = "Delete user by ID")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
@@ -79,19 +84,11 @@ public class AuthController {
         }
     }
 
-
     @Operation(summary = "Get all users")
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(authService.getAllUsers());
     }
-
-    @Operation(summary = "Get user by ID")
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
-        Optional<User> user = authService.getUserById(id);
-        return user.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+ */
 
 }
