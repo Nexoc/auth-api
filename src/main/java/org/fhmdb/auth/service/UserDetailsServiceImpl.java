@@ -39,4 +39,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         logger.info("Login successful for user: {}", email);
         return user;
     }
+
+    public UserDetails loadUserByEmailWithoutOauthCheck(String email) throws UsernameNotFoundException {
+        logger.info("Loading user (token validation) for email: {}", email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 }

@@ -1,5 +1,6 @@
 package org.fhmdb.auth.service;
 
+import org.fhmdb.auth.dto.AuthResponse;
 import org.fhmdb.auth.dto.UpdateProfileRequest;
 import org.fhmdb.auth.exceptions.EmailAlreadyExistsException;
 import org.fhmdb.auth.model.User;
@@ -26,21 +27,21 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(User user) {
+    public User register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             logger.warn("Attempt to register with existing email: {}", user.getEmail());
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         logger.info("User registered: {}", user.getEmail());
-        return "User registered successfully";
+        return savedUser;
     }
 
 
-    public String login(String email, String password) {
+    public AuthResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     logger.warn("Login failed: email not found ({})", email);
@@ -53,8 +54,9 @@ public class AuthService {
         }
 
         logger.info("User logged in: {}", email);
-        return jwtUtil.generateToken(user.getEmail());
+        return new AuthResponseBuilder(jwtUtil).build(user);
     }
+
 
     public void updateProfile(User currentUser, UpdateProfileRequest request) {
         if (request.email() != null && !request.email().equals(currentUser.getEmail())) {
@@ -78,38 +80,9 @@ public class AuthService {
 
         userRepository.save(currentUser);
     }
-
-
-
+    /*
     public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
-    }
-
-    /*
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public boolean updateUser(User updatedUser) {
-        return userRepository.findById(updatedUser.getUserId())
-                .map(existingUser -> {
-                    existingUser.setName(updatedUser.getName());
-                    existingUser.setEmail(updatedUser.getEmail());
-                    if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-                        existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-                    }
-                    userRepository.save(existingUser);
-                    return true;
-                })
-                .orElse(false);
-    }
-
-    public boolean deleteUser(Integer id) {
-        if (!userRepository.existsById(id)) {
-            return false;
-        }
-        userRepository.deleteById(id);
-        return true;
     }
      */
 }

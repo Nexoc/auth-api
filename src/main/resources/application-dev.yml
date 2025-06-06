@@ -63,6 +63,8 @@ logging:
   level:
     org.springframework.web: DEBUG     # Show detailed web logs (e.g. requests, controller mapping)
     org.springdoc: DEBUG               # Show Swagger/OpenAPI-related debug logs
+    org.fhmdb.auth.security: INFO       # логика успеха входа через OAuth2
+    org.fhmdb.auth.service: INFO
 
 # CORS config (documented - needs CorsConfig.java to apply)
 cors:

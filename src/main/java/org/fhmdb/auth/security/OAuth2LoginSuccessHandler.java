@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,34 +32,25 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
 
-        // Extract authenticated OAuth2 user
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        // Extract required user information
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
 
-        log.debug("OAuth2 login success: email={}, name={}", email, name);
-
-        // Validate email presence
         if (email == null) {
+            log.warn("OAuth2 login failed: email not provided by GitHub.");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Email not provided by OAuth2 provider.");
             return;
         }
 
-        // Find or create user in the system
+        log.info("OAuth2 login success for GitHub user: email={}, name={}", email, name);
+
         User user = oAuthUserService.findOrRegister(email, name);
+        log.info("User resolved or registered: id={}, email={}", user.getUserId(), user.getEmail());
 
-        // Generate JWT token for the user
         String token = jwtUtil.generateToken(user.getEmail());
+        log.info("Generated JWT token for {}: {}", user.getEmail(), token);  // Удали это позже по соображениям безопасности
 
-        log.debug("Generated JWT token for {}: {}", user.getEmail(), token);
-
-        // Log frontend URL value
-        log.debug("Redirecting to frontend: {}", frontendProperties.getUrl());
-
-        // Build frontend redirect URL with token and user info
-        // Use URI from application.yml
         String redirectUrl = String.format(
                 "%s?token=%s&id=%d&username=%s",
                 frontendProperties.getUrl(),
@@ -67,7 +59,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8)
         );
 
-        // Redirect to frontend with token and user data
+        log.info("Redirecting user to frontend with token: {}", redirectUrl);
+
         response.sendRedirect(redirectUrl);
     }
 }

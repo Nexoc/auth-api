@@ -62,7 +62,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var userDetails = userDetailsService.loadUserByUsername(email);
+            // var userDetails = userDetailsService.loadUserByUsername(email);
+            var userDetails = userDetailsService.loadUserByEmailWithoutOauthCheck(email);
+
             logger.info("Loaded user details for: {}", email);
 
             if (jwtUtil.validateToken(jwt)) {
