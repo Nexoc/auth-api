@@ -49,7 +49,7 @@ public class OAuthUserService {
 
         User saved = userRepository.save(newUser);
 
-        logger.info("ew OAuth user registered: ID = {}, email = {}", saved.getUserId(), saved.getEmail());
+        logger.info("New OAuth user registered: ID = {}, email = {}", saved.getUserId(), saved.getEmail());
 
         return saved;
     }

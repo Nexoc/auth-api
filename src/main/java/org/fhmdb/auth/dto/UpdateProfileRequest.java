@@ -1,14 +1,23 @@
 package org.fhmdb.auth.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 
-public record UpdateProfileRequest(
-        String name,
+@JacksonXmlRootElement(localName = "updateProfileRequest")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UpdateProfileRequest {
+
+        private String name;
 
         @Email(message = "Invalid email format")
-        String email,
+        private String email;
 
         @Size(min = 5, message = "Password must be at least 5 characters")
-        String password
-) {}
+        private String password;
+}

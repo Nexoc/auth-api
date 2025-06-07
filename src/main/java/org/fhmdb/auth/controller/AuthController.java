@@ -12,6 +12,7 @@ import org.fhmdb.auth.service.AuthResponseBuilder;
 import org.fhmdb.auth.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -38,14 +39,17 @@ public class AuthController {
      * Returns a structured AuthResponse with token and user info.
      */
     @Operation(summary = "User registration")
-    @PostMapping("/register")
+    @PostMapping(value = "/register",
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
+    )
     public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
-        log.info("Attempting to register user: {}", request.email());
+        log.info("Attempting to register user: {}", request.getEmail());
 
         User user = User.builder()
-                .name(request.name())
-                .email(request.email())
-                .password(request.password())
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(request.getPassword())
                 .build();
 
         User registeredUser = authService.register(user);
@@ -60,9 +64,13 @@ public class AuthController {
      * Returns token and user info in a consistent AuthResponse format.
      */
     @Operation(summary = "User login with email and password")
-    @PostMapping("/login")
+    @PostMapping(
+            value = "/login",
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
+    )
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
-        AuthResponse response = authService.login(request.email(), request.password());
+        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
     }
 
@@ -71,14 +79,20 @@ public class AuthController {
      * Updates the profile of the currently authenticated user.
      */
     @Operation(summary = "Update own profile")
-    @PutMapping("/profile")
-    public ResponseEntity<String> updateOwnProfile(
+    @PatchMapping(
+            value = "/profile",
+            consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE }
+    )
+    public ResponseEntity<AuthResponse> updateOwnProfile(
             @AuthenticationPrincipal User currentUser,
-            @RequestBody UpdateProfileRequest request
+            @RequestBody @Valid UpdateProfileRequest request
     ) {
         log.info("Updating profile for user ID: {}", currentUser.getUserId());
 
-        authService.updateProfile(currentUser, request);
-        return ResponseEntity.ok("Profile updated successfully");
+        User updatedUser = authService.updateProfile(currentUser, request);
+        AuthResponse response = authResponseBuilder.build(updatedUser);
+        return ResponseEntity.ok(response);
     }
+
 }

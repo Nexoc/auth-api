@@ -58,31 +58,26 @@ public class AuthService {
     }
 
 
-    public void updateProfile(User currentUser, UpdateProfileRequest request) {
-        if (request.email() != null && !request.email().equals(currentUser.getEmail())) {
-            if (userRepository.findByEmail(request.email()).isPresent()) {
-                logger.warn("Email already in use during profile update: {}", request.email());
+    public User updateProfile(User currentUser, UpdateProfileRequest request) {
+        if (request.getEmail() != null && !request.getEmail().equals(currentUser.getEmail())) {
+            if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                logger.warn("Email already in use during profile update: {}", request.getEmail());
                 throw new EmailAlreadyExistsException("Email already in use");
             }
-            logger.info("User {} changed email to {}", currentUser.getUserId(), request.email());
-            currentUser.setEmail(request.email());
+            logger.info("User {} changed email to {}", currentUser.getUserId(), request.getEmail());
+            currentUser.setEmail(request.getEmail());
         }
 
-        if (request.name() != null) {
-            logger.info("User {} changed name to {}", currentUser.getUserId(), request.name());
-            currentUser.setName(request.name());
+        if (request.getName() != null && !request.getName().isBlank()) {
+            logger.info("User {} changed name to {}", currentUser.getUserId(), request.getName());
+            currentUser.setName(request.getName());
         }
 
-        if (request.password() != null && !request.password().isBlank()) {
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
             logger.info("User {} updated password", currentUser.getUserId());
-            currentUser.setPassword(passwordEncoder.encode(request.password()));
+            currentUser.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
-        userRepository.save(currentUser);
+        return userRepository.save(currentUser);
     }
-    /*
-    public Optional<User> getUserById(Integer id) {
-        return userRepository.findById(id);
-    }
-     */
 }

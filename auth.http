@@ -1,0 +1,45 @@
+### Register (JSON)
+POST http://localhost:8001/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Marat Davletshin",
+  "email": "marat1@example.com",
+  "password": "strongPassword123"
+}
+
+
+### Register (XML)
+POST http://localhost:8001/auth/register
+Content-Type: application/xml
+Accept: application/xml
+
+<registerRequest>
+  <name>Marat Davletshin</name>
+  <email>marat2@example.com</email>
+  <password>strongPassword123</password>
+</registerRequest>
+
+
+
+### Login (JSON)
+POST http://localhost:8001/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "marat1@example.com",
+  "password": "strongPassword123"
+}
+
+
+### Login (XML)
+POST http://localhost:8001/auth/login
+Content-Type: application/xml
+Accept: application/xml
+
+<loginRequest>
+  <email>marat2@example.com</email>
+  <password>strongPassword123</password>
+</loginRequest>

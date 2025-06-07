@@ -19,8 +19,8 @@ public class AuthResponseBuilder {
         return new AuthResponse(
                 token,
                 user.getUserId(),
-                user.getEmail(),                // может быть null → Jackson сам отобразит как null
-                user.getName() != null ? user.getName() : "Unknown", // дефолтное значение
+                user.getEmail(),                    // can be null
+                user.getName() != null ? user.getName() : "Unknown", // by default
                 user.isOauthUser(),
                 user.getFaceId()
         );

@@ -93,10 +93,4 @@ public class FaceAuthService {
         logger.debug("Looking for user with faceId {}", faceId);
         return userRepository.findByFaceId(faceId);
     }
-
-    public String generateToken(User user) {
-        logger.info("Generating JWT for user {}", user.getEmail());
-        return jwtUtil.generateToken(user.getEmail());
-    }
-
 }

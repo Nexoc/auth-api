@@ -65,12 +65,6 @@ public class FaceAuthController {
 
         // Build structured response
         AuthResponse response = authResponseBuilder.build(user);
-        log.debug("Built AuthResponse for user {}: token={}, id={}, oauth={}, faceId={}",
-                user.getEmail(),
-                response.token(),
-                response.userId(),
-                response.oauthUser(),
-                response.faceId());
 
         return ResponseEntity.ok(response);
     }
