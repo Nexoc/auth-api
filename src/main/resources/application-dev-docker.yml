@@ -1,7 +1,7 @@
 spring:
   datasource:
     # -------> USE docker-compose2 <------------
-    url: jdbc:postgresql://db_auth:5432/db_auth  # Database URL (when running inside Docker)
+    url: jdbc:postgresql://db_auth:5432/db_auth    # Database URL (when running inside Docker)
     username: nexoc                                # Database username
     password: ´0880´                               # Database password (quoted in case of special characters)
     driver-class-name: org.postgresql.Driver       # PostgreSQL JDBC driver
@@ -51,33 +51,29 @@ springdoc:
   api-docs:
     enabled: true                                  # Enable OpenAPI docs generation
 
+
 logging:
   level:
-    org.springframework.web: DEBUG
-    org.springdoc: DEBUG
+    org.springframework.web: DEBUG     # Show detailed web logs (e.g. requests, controller mapping)
+    org.springdoc: DEBUG               # Show Swagger/OpenAPI-related debug logs
+    org.fhmdb.auth.security: INFO       # логика успеха входа через OAuth2
+    org.fhmdb.auth.service: INFO
 
-debug:
-  enabled: true  #
-
+# CORS config (documented - needs CorsConfig.java to apply)
 cors:
   allowed-origins:
-    - "http://localhost:3000"
     - "http://localhost:8080"
+    - "http://localhost:8081"
+    - "http://localhost:3000"
     - "https://frontend2.com"
     - "http://backend.com"
-  allowed-methods:
-    - GET
-    - POST
-    - PUT
-    - DELETE
-    - OPTIONS
-  allowed-headers:
-    - "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
   allow-credentials: true
 
-
+# please change right PORT if necessary
 frontend:
-  url: "http://localhost:3000/oauth-success"       # Redirect URL after successful GitHub login (frontend route)
+  url: "http://localhost:8080/oauth-success"       # Redirect URL after successful GitHub login (frontend route)
 
 faceapi:
-  recognize-url: "http://localhost:8000/recognize"
+  recognize-url: "http://face-api:8000/recognize"
