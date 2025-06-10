@@ -20,3 +20,4 @@ RUN ./mvnw clean package -DskipTests
 
 # Запускаем приложение
 CMD ["java", "-jar", "target/auth-0.0.1-SNAPSHOT.jar"]
+
